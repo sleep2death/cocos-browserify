@@ -1,76 +1,63 @@
-/**
- * A brief explanation for "project.json":
- * Here is the content of project.json file, this is the global configuration for your game, you can modify it to customize some behavior.
- * The detail of each field is under it.
- {
-    "project_type": "javascript",
-    // "project_type" indicate the program language of your project, you can ignore this field
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var BootScene = require('./scenes/boot')
 
-    "debugMode"     : 1,
-    // "debugMode" possible values :
-    //      0 - No message will be printed.
-    //      1 - cc.error, cc.assert, cc.warn, cc.log will print in console.
-    //      2 - cc.error, cc.assert, cc.warn will print in console.
-    //      3 - cc.error, cc.assert will print in console.
-    //      4 - cc.error, cc.assert, cc.warn, cc.log will print on canvas, available only on web.
-    //      5 - cc.error, cc.assert, cc.warn will print on canvas, available only on web.
-    //      6 - cc.error, cc.assert will print on canvas, available only on web.
+cc.game.onStart = function () {
+  // Pass true to enable retina display, on Android disabled by default to improve performance
+  cc.view.enableRetina(cc.sys.os === cc.sys.OS_IOS)
 
-    "showFPS"       : true,
-    // Left bottom corner fps information will show when "showFPS" equals true, otherwise it will be hide.
+  // Adjust viewport meta
+  cc.view.adjustViewPort(true)
 
-    "frameRate"     : 60,
-    // "frameRate" set the wanted frame rate for your game, but the real fps depends on your game implementation and the running environment.
+  // Uncomment the following line to set a fixed orientation for your game
+  // cc.view.setOrientation(cc.ORIENTATION_PORTRAIT);
 
-    "noCache"       : false,
-    // "noCache" set whether your resources will be loaded with a timestamp suffix in the url.
-    // In this way, your resources will be force updated even if the browser holds a cache of it.
-    // It's very useful for mobile browser debugging.
+  // Setup the resolution policy and design resolution size
+  cc.view.setDesignResolutionSize(960, 640, cc.ResolutionPolicy.SHOW_ALL)
 
-    "id"            : "gameCanvas",
-    // "gameCanvas" sets the id of your canvas element on the web page, it's useful only on web.
+  // The game will be resized when browser size change
+  cc.view.resizeWithBrowserSize(true)
 
-    "renderMode"    : 0,
-    // "renderMode" sets the renderer type, only useful on web :
-    //      0 - Automatically chosen by engine
-    //      1 - Forced to use canvas renderer
-    //      2 - Forced to use WebGL renderer, but this will be ignored on mobile browsers
+  // load resources
+  cc.director.runScene(new BootScene())
+}
+cc.game.run()
 
-    "engineDir"     : "frameworks/cocos2d-html5/",
-    // In debug mode, if you use the whole engine to develop your game, you should specify its relative path with "engineDir",
-    // but if you are using a single engine file, you can ignore it.
+},{"./scenes/boot":2}],2:[function(require,module,exports){
+var HelloWorldLayer = cc.Layer.extend({
+  ctor: function () {
+    this._super()
 
-    "modules"       : ["cocos2d"],
-    // "modules" defines which modules you will need in your game, it's useful only on web,
-    // using this can greatly reduce your game's resource size, and the cocos console tool can package your game with only the modules you set.
-    // For details about modules definitions, you can refer to "../../frameworks/cocos2d-html5/modulesConfig.json".
+    var size = cc.winSize
 
-    "jsList"        : [
-    ]
-    // "jsList" sets the list of js files in your game.
- }
- *
- */
+    var helloLabel = new cc.LabelTTF('Hello World', 'Arial', 38)
 
-cc.game.onStart = function(){
-    // Pass true to enable retina display, on Android disabled by default to improve performance
-    cc.view.enableRetina(cc.sys.os === cc.sys.OS_IOS ? true : false);
+    helloLabel.x = size.width / 2
+    helloLabel.y = (size.height / 2) + 150
+    // add the label as a child to this layer
+    this.addChild(helloLabel, 5)
 
-    // Adjust viewport meta
-    cc.view.adjustViewPort(true);
+    // add "HelloWorld" splash screen"
+    cc.spriteFrameCache.addSpriteFrames('./res/pvr_test.plist')
+    this.spriteSheet = new cc.SpriteBatchNode('./res/pvr_test.pvr')
+    this.addChild(this.spriteSheet)
 
-    // Uncomment the following line to set a fixed orientation for your game
-    // cc.view.setOrientation(cc.ORIENTATION_PORTRAIT);
+    this.sprite = new cc.Sprite('#pixi.png')
+    this.sprite.attr({
+      x: size.width / 2,
+      y: size.height / 2
+    })
+    this.spriteSheet.addChild(this.sprite)
+    return true
+  }
+})
 
-    // Setup the resolution policy and design resolution size
-    cc.view.setDesignResolutionSize(960, 640, cc.ResolutionPolicy.SHOW_ALL);
+module.exports = cc.Scene.extend({
+  onEnter: function () {
+    this._super()
+    var layer = new HelloWorldLayer()
+    this.addChild(layer)
+  }
+})
 
-    // The game will be resized when browser size change
-    cc.view.resizeWithBrowserSize(true);
 
-    //load resources
-    cc.LoaderScene.preload(g_resources, function () {
-        cc.director.runScene(new HelloWorldScene());
-    }, this);
-};
-cc.game.run();
+},{}]},{},[1]);
