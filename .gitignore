@@ -8,3 +8,4 @@ simulator
 CMakeLists.txt
 manifest.webapp
 .cocos-project.json
+index.html
