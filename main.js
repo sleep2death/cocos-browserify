@@ -23,7 +23,7 @@ cc.game.onStart = function () {
 cc.game.run()
 
 },{"./scenes/boot":2}],2:[function(require,module,exports){
-var HelloWorldLayer = cc.Layer.extend({
+var PlayerLayer = cc.Layer.extend({
   ctor: function () {
     this._super()
 
@@ -48,13 +48,38 @@ var HelloWorldLayer = cc.Layer.extend({
     })
     this.spriteSheet.addChild(this.sprite)
     return true
+  },
+
+  loadAnimation: function (config, weapon, move) {
+    cc.async.waterfall([
+      function (callback) {
+        cc.loader.loadJson(config, (err, data) => {
+          if(err) throw err
+          callback(null, data[weapon][move])
+        })
+      },
+      function (data, callback) {
+        cc.log('Now Loading Sprites:', data.body, data.weapon)
+        callback()
+      }
+    ])
   }
 })
 
 module.exports = cc.Scene.extend({
   onEnter: function () {
     this._super()
-    var layer = new HelloWorldLayer()
+
+    this.currentCharacter = 'li'
+    this.currentWeapon = 'sword'
+    this.currentMove = 'idle'
+
+    // create the player layer to hold the animation sprites
+    var layer = new PlayerLayer()
+
+    // load the current character's config file
+    layer.loadAnimation('./res/' + this.currentCharacter + '/config.json', this.currentWeapon, this.currentMove)
+
     this.addChild(layer)
   }
 })
