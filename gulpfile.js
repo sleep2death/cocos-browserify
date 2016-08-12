@@ -34,9 +34,9 @@ gulp.task('clean', () => {
  *    */
 gulp.task('bundle', ['clean'], () => {
   return b.bundle()
-    .on('error', err => {
+    .on('error', function (err) {
       console.log(err.message)
-      // this.emit('end')
+      this.emit('end')
     })
     .pipe(plumber())
     .pipe(source('main.js'))

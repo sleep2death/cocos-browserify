@@ -1,3 +1,6 @@
+var CONST = {
+  RES_DIR: './res'
+}
 var PlayerLayer = cc.Layer.extend({
   ctor: function () {
     this._super()
@@ -12,11 +15,11 @@ var PlayerLayer = cc.Layer.extend({
     this.addChild(helloLabel, 5)
 
     // add "HelloWorld" splash screen"
-    cc.spriteFrameCache.addSpriteFrames('./res/pvr_test.plist')
-    this.spriteSheet = new cc.SpriteBatchNode('./res/pvr_test.pvr')
+    cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist')
+    this.spriteSheet = new cc.SpriteBatchNode('./res/li/body_idle.png')
     this.addChild(this.spriteSheet)
 
-    this.sprite = new cc.Sprite('#pixi.png')
+    this.sprite = new cc.Sprite('#00001.png')
     this.sprite.attr({
       x: size.width / 2,
       y: size.height / 2
@@ -25,16 +28,20 @@ var PlayerLayer = cc.Layer.extend({
     return true
   },
 
-  loadAnimation: function (config, weapon, move) {
+  loadAnimation: function (name, weapon, move) {
+    var baseDir = CONST.RES_DIR + '/' + name + '/'
     cc.async.waterfall([
       function (callback) {
-        cc.loader.loadJson(config, (err, data) => {
+        cc.loader.loadJson(baseDir + 'config.json', (err, data) => {
           if(err) throw err
           callback(null, data[weapon][move])
         })
       },
+      // load body sprites
       function (data, callback) {
-        cc.log('Now Loading Sprites:', data.body, data.weapon)
+        var bodyDir = baseDir + data.body + '.json'
+        var weaponDir = baseDir + data.weapon + '.json'
+        cc.log('now creating animation:', bodyDir, weaponDir)
         callback()
       }
     ])
@@ -53,7 +60,7 @@ module.exports = cc.Scene.extend({
     var layer = new PlayerLayer()
 
     // load the current character's config file
-    layer.loadAnimation('./res/' + this.currentCharacter + '/config.json', this.currentWeapon, this.currentMove)
+    layer.loadAnimation(this.currentCharacter, this.currentWeapon, this.currentMove)
 
     this.addChild(layer)
   }
