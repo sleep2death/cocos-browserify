@@ -16,7 +16,7 @@ cc.game.onStart = function () {
   // The game will be resized when browser size change
   cc.view.resizeWithBrowserSize(true)
 
-  // load resources
+  // load resourcjs
   cc.director.runScene(new BootScene())
 }
 cc.game.run()

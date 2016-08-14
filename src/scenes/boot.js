@@ -16,15 +16,15 @@ var PlayerLayer = cc.Layer.extend({
 
     // add "HelloWorld" splash screen"
     cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist')
-    this.spriteSheet = new cc.SpriteBatchNode('./res/li/body_idle.png')
-    this.addChild(this.spriteSheet)
+    // this.spriteSheet = new cc.SpriteBatchNode('./res/li/body_idle.png')
+    // this.addChild(this.spriteSheet)
 
-    this.sprite = new cc.Sprite('#00001.png')
+    this.sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('00001.png'))
     this.sprite.attr({
       x: size.width / 2,
       y: size.height / 2
     })
-    this.spriteSheet.addChild(this.sprite)
+    this.addChild(this.sprite)
     return true
   },
 
@@ -60,7 +60,7 @@ module.exports = cc.Scene.extend({
     var layer = new PlayerLayer()
 
     // load the current character's config file
-    layer.loadAnimation(this.currentCharacter, this.currentWeapon, this.currentMove)
+    // layer.loadAnimation(this.currentCharacter, this.currentWeapon, this.currentMove)
 
     this.addChild(layer)
   }
