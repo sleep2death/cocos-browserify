@@ -1,4 +1,5 @@
-var BootScene = require('./scenes/boot')
+'use strict'
+import BootScene from './scenes/boot'
 
 cc.game.onStart = function () {
   // Pass true to enable retina display, on Android disabled by default to improve performance

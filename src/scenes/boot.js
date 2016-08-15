@@ -1,13 +1,16 @@
-var CONST = {
+const CONST = {
   RES_DIR: './res'
 }
-var PlayerLayer = cc.Layer.extend({
+
+const PlayerLayer = cc.Layer.extend({
   ctor: function () {
     this._super()
 
-    var size = cc.winSize
+    this.makeShader()
 
-    var helloLabel = new cc.LabelTTF('Hello World', 'Arial', 38)
+    const size = cc.winSize
+
+    const helloLabel = new cc.LabelTTF('Hello World', 'Arial', 38)
 
     helloLabel.x = size.width / 2
     helloLabel.y = (size.height / 2) + 150
@@ -16,20 +19,48 @@ var PlayerLayer = cc.Layer.extend({
 
     // add "HelloWorld" splash screen"
     cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist')
+    const mask = cc.textureCache.addImage('./res/li/body_idle_a.pvr')
     // this.spriteSheet = new cc.SpriteBatchNode('./res/li/body_idle.png')
     // this.addChild(this.spriteSheet)
 
-    this.sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('00001.png'))
-    this.sprite.attr({
-      x: size.width / 2,
-      y: size.height / 2
-    })
-    this.addChild(this.sprite)
+    const sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('40001.png'))
+    sprite.setAnchorPoint(cc.p(0.5, 0.5))
+    sprite.setPosition(cc.p(size.width * 0.5, size.height * 0.5))
+
+    const sprite1 = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('20001.png'))
+    sprite1.setAnchorPoint(cc.p(0.5, 0.5))
+    sprite1.setPosition(cc.p((size.width * 0.5) + 100, size.height * 0.5))
+
+    // this.maskSprite = new cc.Sprite('./res/li/body_idle_a.png')
+
+    const shader = cc.shaderCache.getProgram('player')
+
+    sprite.setShaderProgram(shader)
+    sprite.getGLProgramState().setUniformTexture('u_mask', mask)
+
+    sprite1.setShaderProgram(shader)
+    sprite1.getGLProgramState().setUniformTexture('u_mask', mask)
+
+    this.addChild(sprite)
+    this.addChild(sprite1)
     return true
   },
 
+  makeShader: function () {
+    const shader = new cc.GLProgram()
+    shader.init('./res/player.vs', './res/player.fs')
+
+    shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION)
+    shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS)
+
+    shader.link()
+    shader.updateUniforms()
+
+    cc.shaderCache.addProgram(shader, 'player')
+  },
+
   loadAnimation: function (name, weapon, move) {
-    var baseDir = CONST.RES_DIR + '/' + name + '/'
+    const baseDir = CONST.RES_DIR + '/' + name + '/'
     cc.async.waterfall([
       function (callback) {
         cc.loader.loadJson(baseDir + 'config.json', (err, data) => {
@@ -39,8 +70,8 @@ var PlayerLayer = cc.Layer.extend({
       },
       // load body sprites
       function (data, callback) {
-        var bodyDir = baseDir + data.body + '.json'
-        var weaponDir = baseDir + data.weapon + '.json'
+        const bodyDir = baseDir + data.body + '.json'
+        const weaponDir = baseDir + data.weapon + '.json'
         cc.log('now creating animation:', bodyDir, weaponDir)
         callback()
       }
@@ -48,7 +79,7 @@ var PlayerLayer = cc.Layer.extend({
   }
 })
 
-module.exports = cc.Scene.extend({
+export default cc.Scene.extend({
   onEnter: function () {
     this._super()
 
@@ -57,7 +88,7 @@ module.exports = cc.Scene.extend({
     this.currentMove = 'idle'
 
     // create the player layer to hold the animation sprites
-    var layer = new PlayerLayer()
+    const layer = new PlayerLayer()
 
     // load the current character's config file
     // layer.loadAnimation(this.currentCharacter, this.currentWeapon, this.currentMove)

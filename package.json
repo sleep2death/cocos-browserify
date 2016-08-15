@@ -21,6 +21,7 @@
     "hammerjs": "^2.0.8"
   },
   "xo": {
+    "esnext": true,
     "env": [
       "node",
       "browser"
@@ -30,6 +31,7 @@
       "keyword-spacing": 0,
       "guard-for-in": 0,
       "xo/filename-case": 0,
+      "babel/object-shorthand": 0,
       "max-params": [
         "error",
         5
@@ -45,8 +47,10 @@
     ]
   },
   "devDependencies": {
+    "babelify": "^7.3.0",
     "browserify": "^13.1.0",
     "del": "^2.2.1",
+    "glslify": "^5.1.0",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
     "gulp-header": "^1.8.7",

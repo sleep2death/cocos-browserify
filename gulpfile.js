@@ -13,8 +13,10 @@ const del = require('del')
 
 const customOpts = {
   entries: ['./src/index.js'],
-  debug: false
-  // transform: [['babelify', {presets: ['es2015']}]] // do not ignore anything, we will pack all requires to one file
+  debug: false,
+  transform: [['babelify', {
+    presets: ['es2015']
+  }]] // do not ignore anything, we will pack all requires to one file
 }
 
 const opts = assign({}, watchify.args, customOpts)
