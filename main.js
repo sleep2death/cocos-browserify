@@ -1,6 +1,49 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var SHADER_PLAYER = 'player';
+var UNIFORM_MASK = 'u_mask';
+
+exports.default = cc.Sprite.extend({
+  ctor: function ctor(frames, mask) {
+    if (!cc.spriteFrameCache.isSpriteFramesWithFileLoaded(frames)) {
+      cc.spriteFrameCache.addSpriteFrames(frames);
+    }
+
+    this._super(cc.spriteFrameCache.getSpriteFrame('00000.png'));
+
+    var shader = this.createShader(SHADER_PLAYER);
+    this.setShaderProgram(shader);
+
+    var maskTexture = cc.textureCache.addImage(mask);
+    this.getGLProgramState().setUniformTexture(UNIFORM_MASK, maskTexture);
+  },
+
+  createShader: function createShader(shaderName) {
+    var shader = cc.shaderCache.getProgram(shaderName);
+    if (!shader) {
+      shader = new cc.GLProgram();
+      shader.init('./res/' + shaderName + '.vs', './res/' + shaderName + '.fs');
+
+      shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
+      shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+
+      shader.link();
+      shader.updateUniforms();
+
+      cc.shaderCache.addProgram(shader, shaderName);
+    }
+
+    return shader;
+  }
+});
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
 var _boot = require('./scenes/boot');
 
 var _boot2 = _interopRequireDefault(_boot);
@@ -28,12 +71,19 @@ cc.game.onStart = function () {
 };
 cc.game.run();
 
-},{"./scenes/boot":2}],2:[function(require,module,exports){
+},{"./scenes/boot":3}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _Player = require('../core/Player');
+
+var _Player2 = _interopRequireDefault(_Player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var CONST = {
   RES_DIR: './res'
 };
@@ -51,30 +101,10 @@ var PlayerLayer = cc.Layer.extend({
     // add the label as a child to this layer
     this.addChild(helloLabel, 5);
 
-    // add "HelloWorld" splash screen"
-    cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist');
-    var mask = cc.textureCache.addImage('./res/li/body_idle_a.pvr');
+    this.player = new _Player2.default('./res/li/body_idle.plist', './res/li/body_idle_a.pvr');
+    this.player.setPosition(cc.p(size.width * 0.5, size.height * 0.5));
+    this.addChild(this.player);
 
-    var sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('40001.png'));
-    sprite.setAnchorPoint(cc.p(0.5, 0.5));
-    sprite.setPosition(cc.p(size.width * 0.5, size.height * 0.5));
-
-    var sprite1 = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('20001.png'));
-    sprite1.setAnchorPoint(cc.p(0.5, 0.5));
-    sprite1.setPosition(cc.p(size.width * 0.5 + 100, size.height * 0.5));
-
-    // this.maskSprite = new cc.Sprite('./res/li/body_idle_a.png')
-
-    var shader = this.makeShader('player');
-
-    sprite.setShaderProgram(shader);
-    sprite.getGLProgramState().setUniformTexture('u_mask', mask);
-
-    sprite1.setShaderProgram(shader);
-    // sprite1.getGLProgramState().setUniformTexture('u_mask', mask)
-
-    this.addChild(sprite);
-    this.addChild(sprite1);
     return true;
   },
 
@@ -133,4 +163,4 @@ exports.default = cc.Scene.extend({
   }
 });
 
-},{}]},{},[1]);
+},{"../core/Player":1}]},{},[2]);

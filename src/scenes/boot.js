@@ -1,3 +1,5 @@
+import Player from '../core/Player'
+
 const CONST = {
   RES_DIR: './res'
 }
@@ -15,30 +17,10 @@ const PlayerLayer = cc.Layer.extend({
     // add the label as a child to this layer
     this.addChild(helloLabel, 5)
 
-    // add "HelloWorld" splash screen"
-    cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist')
-    const mask = cc.textureCache.addImage('./res/li/body_idle_a.pvr')
+    this.player = new Player('./res/li/body_idle.plist', './res/li/body_idle_a.pvr')
+    this.player.setPosition(cc.p(size.width * 0.5, size.height * 0.5))
+    this.addChild(this.player)
 
-    const sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('40001.png'))
-    sprite.setAnchorPoint(cc.p(0.5, 0.5))
-    sprite.setPosition(cc.p(size.width * 0.5, size.height * 0.5))
-
-    const sprite1 = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('20001.png'))
-    sprite1.setAnchorPoint(cc.p(0.5, 0.5))
-    sprite1.setPosition(cc.p((size.width * 0.5) + 100, size.height * 0.5))
-
-    // this.maskSprite = new cc.Sprite('./res/li/body_idle_a.png')
-
-    const shader = this.makeShader('player')
-
-    sprite.setShaderProgram(shader)
-    sprite.getGLProgramState().setUniformTexture('u_mask', mask)
-
-    sprite1.setShaderProgram(shader)
-    // sprite1.getGLProgramState().setUniformTexture('u_mask', mask)
-
-    this.addChild(sprite)
-    this.addChild(sprite1)
     return true
   },
 
