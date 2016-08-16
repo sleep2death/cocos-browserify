@@ -42,8 +42,6 @@ var PlayerLayer = cc.Layer.extend({
   ctor: function ctor() {
     this._super();
 
-    this.makeShader();
-
     var size = cc.winSize;
 
     var helloLabel = new cc.LabelTTF('Hello World', 'Arial', 38);
@@ -56,8 +54,6 @@ var PlayerLayer = cc.Layer.extend({
     // add "HelloWorld" splash screen"
     cc.spriteFrameCache.addSpriteFrames('./res/li/body_idle.plist');
     var mask = cc.textureCache.addImage('./res/li/body_idle_a.pvr');
-    // this.spriteSheet = new cc.SpriteBatchNode('./res/li/body_idle.png')
-    // this.addChild(this.spriteSheet)
 
     var sprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame('40001.png'));
     sprite.setAnchorPoint(cc.p(0.5, 0.5));
@@ -69,30 +65,36 @@ var PlayerLayer = cc.Layer.extend({
 
     // this.maskSprite = new cc.Sprite('./res/li/body_idle_a.png')
 
-    var shader = cc.shaderCache.getProgram('player');
+    var shader = this.makeShader('player');
 
     sprite.setShaderProgram(shader);
     sprite.getGLProgramState().setUniformTexture('u_mask', mask);
 
     sprite1.setShaderProgram(shader);
-    sprite1.getGLProgramState().setUniformTexture('u_mask', mask);
+    // sprite1.getGLProgramState().setUniformTexture('u_mask', mask)
 
     this.addChild(sprite);
     this.addChild(sprite1);
     return true;
   },
 
-  makeShader: function makeShader() {
-    var shader = new cc.GLProgram();
-    shader.init('./res/player.vs', './res/player.fs');
+  makeShader: function makeShader(shaderName) {
+    // if program not exist create a new one
+    var shader = cc.shaderCache.getProgram(shaderName);
+    if (!shader) {
+      shader = new cc.GLProgram();
+      shader.init('./res/' + shaderName + '.vs', './res/' + shaderName + '.fs');
 
-    shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
-    shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+      shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
+      shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
 
-    shader.link();
-    shader.updateUniforms();
+      shader.link();
+      shader.updateUniforms();
 
-    cc.shaderCache.addProgram(shader, 'player');
+      cc.shaderCache.addProgram(shader, shaderName);
+    }
+
+    return shader;
   },
 
   loadAnimation: function loadAnimation(name, weapon, move) {
