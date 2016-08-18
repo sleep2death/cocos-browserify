@@ -57,8 +57,8 @@ gulp.task('bundle', ['clean'], () => {
  * amounts of media.
  */
 gulp.task('watch', ['bundle'], () => {
-  const watcher = gulp.watch('./src/**', ['bundle'])
-  watcher.on('change', event => {
+  const jsWatcher = gulp.watch('./src/**', ['bundle'])
+  jsWatcher.on('change', event => {
     console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
   })
 })
