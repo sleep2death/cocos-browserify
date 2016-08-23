@@ -612,13 +612,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>body_idle.pvr.ccz</string>
+            <string>body_idle_a.pvr.ccz</string>
             <key>size</key>
             <string>{1024,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:1c4ddfb056453b1a1284071549c74650:6a5f07e8ba2fcee0c60c3bb50b877bcf:f353e845ecce76366f56a370014f36b8$</string>
+            <string>$TexturePacker:SmartUpdate:64a825a3881ca4f5e752a05b52cccb19:49a640285f6f231c37bed6a934c257dd:c65ff52106a6c6ac844f2bcf1f1ca2af$</string>
             <key>textureFileName</key>
-            <string>body_idle.pvr.ccz</string>
+            <string>body_idle_a.pvr.ccz</string>
         </dict>
     </dict>
 </plist>

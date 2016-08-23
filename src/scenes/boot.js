@@ -17,7 +17,7 @@ const PlayerLayer = cc.Layer.extend({
     // add the label as a child to this layer
     this.addChild(helloLabel, 5)
 
-    this.player = new Player('./res/li/body_idle.plist', './res/li/body_idle_a.pvr')
+    this.player = new Player('./res/feite/body_idle.plist', './res/feite/body_idle_a.pvr.ccz')
     this.player.setPosition(cc.p(size.width * 0.5, size.height * 0.5))
     this.addChild(this.player)
 
